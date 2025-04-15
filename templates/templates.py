@@ -82,62 +82,62 @@ TEMPLATE_UOW_IMPL_FOOTER = """
         _transaction ??= await _context.Database.BeginTransactionAsync(cancellationToken);
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
-    {{
+    {
         if (_transaction is null) throw new TransactionException();
         await _transaction.CommitAsync(cancellationToken);
         await _transaction.DisposeAsync();
         _transaction = null;
-    }}
+    }
 
     public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-    {{
+    {
         if (_transaction is null) return;
         await _transaction.RollbackAsync(cancellationToken);
         await _transaction.DisposeAsync();
         _transaction = null;
-    }}
+    }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {{
+    {
         if (_transaction is not null) throw new TransactionException();
         return await _context.SaveChangesAsync(cancellationToken);
-    }}
+    }
 
     public void Dispose()
-    {{
+    {
         Dispose(true);
         GC.SuppressFinalize(this);
-    }}
+    }
 
     public async ValueTask DisposeAsync()
-    {{
+    {
         if (!_disposed)
-        {{
+        {
             if (_transaction is not null)
-            {{
+            {
                 await _transaction.DisposeAsync();
                 _transaction = null;
-            }}
+            }
 
             await _context.DisposeAsync();
             _disposed = true;
-        }}
+        }
 
         GC.SuppressFinalize(this);
-    }}
+    }
 
     protected virtual void Dispose(bool disposing)
-    {{
+    {
         if (_disposed) return;
 
         if (disposing)
-        {{
+        {
             _transaction?.Dispose();
             _context.Dispose();
-        }}
+        }
 
         _disposed = true;
-    }}
+    }
 }
 """
 
